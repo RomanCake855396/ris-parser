@@ -1,3 +1,5 @@
+import argparse
+
 def authors(au):
     r=au.split(", ")
     if len(r)==2:
@@ -15,25 +17,33 @@ def convert(ris_text):
     for i in ris_text.splitlines():
         k,v=i.split("  - ")
         # print(k, v)
-        if k=="T1":
-            title=v
-        if k=="JO":
-            journal=v
-        if k=="PY":
-            year=v
-        if k=="VL":
-            volume=v
-        if k=="SP":
-            sp=v
-        if k=="DO":
-            doi=v
-        if k=="AU":
-            au=v
-            AU.append(authors(au))
-    return "%s %s. // %s. %s. %s. %s. DOI: %s"%(", ".join(AU), title, journal, year, volume, sp, doi)
+        match k:
+            case "T1":
+                title=v
+            case "JO":
+                journal=v
+            case "PY":
+                year=v
+            case "VL":
+                volume=v
+            case "SP":
+                sp=v
+            case "DO":
+                doi=v
+            case "AU":
+                au=v
+                AU.append(authors(au))
+    
+    return f"{', '.join(AU)} {title}. // {journal}. {year}. {volume}. {sp}. DOI: {doi}"
 
-f1=open("S2666165925000286.ris", "r")
-s=f1.read()
-f1.close() # закрити файл
-r=convert(s)
-print(r)
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Перетворення RIS файлів у формат ДСТУ 8302-2015.")
+    parser.add_argument("file", help="Шлях до RIS файлу для обробки")
+    args = parser.parse_args()
+    process_ris(args.file)
+    with open(file_path, "r") as f1:
+        s = f1.readlines()
+
+    r=convert(s)
+    print(r)

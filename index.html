@@ -20,28 +20,32 @@ def f(au):
         return r[0]
 
 def convert(ris_text):
-    title=""
-    volume=""
-    AU=[]
+    title = ""
+    journal = ""
+    year = ""
+    volume = ""
+    sp = ""
+    doi = ""
+    AU = []
     for i in ris_text.splitlines(True):
         r=i.split("  - ")
-        # print(r[0], r[1])
-        if r[0]=="T1":
-            title=r[1][0:-1]
-        if r[0]=="JO":
-            journal=r[1][0:-1]
-        if r[0]=="PY":
-            year=r[1][0:-1]
-        if r[0]=="VL":
-            volume=r[1][0:-1]
-        if r[0]=="SP":
-            sp=r[1][0:-1]
-        if r[0]=="DO":
-            doi=r[1][0:-1]
-        if r[0]=="AU":
-            au=r[1][0:-1]
-            AU.append(f(au))
-    return "%s %s. // %s. %s. %s. %s. DOI: %s"%(", ".join(AU), title, journal, year, volume, sp, doi)
+        match r[0]:
+            case "T1":
+                title = r[1].strip()
+            case "JO":
+                journal = r[1].strip()
+            case "PY":
+                year = r[1].strip()
+            case "VL":
+                volume = r[1].strip()
+            case "SP":
+                sp = r[1].strip()
+            case "DO":
+                doi = r[1].strip()
+            case "AU":
+                au = r[1].strip()
+                AU.append(f(au))
+    return f"{', '.join(AU)} {title}. // {journal}. {year}. {volume}. {sp}. DOI: {doi}"
     
 from pyscript import document
 def display_text(*args):
